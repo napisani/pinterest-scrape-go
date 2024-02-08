@@ -14,7 +14,7 @@ func usage() {
 }
 
 func main() {
-	searchQuery := flag.String("search", "iphone wallpaper pinterest", "The search query to use")
+	searchQuery := flag.String("search", "iphone wallpaper", "The search query to use")
 	maxImages := flag.Int("max", 10, "The maximum number of images to download")
 	maxConcurrent := flag.Int("concurrent", 5, "The maximum number of images to download concurrently")
 	targetDir := flag.String("dir", "images", "The directory to save the images to")
