@@ -2,6 +2,9 @@
 
 `pintrest-scrape-go` is a Go library that allows you to scrape and download images from Pinterest based on a search query.
 
+This project is largely a port of the python project: (pinscrape)[https://github.com/iamatulsingh/pinscrape].
+Most features have been ported except for the use of proxies.
+
 ## Installation
 
 To use `pintrest-scrape-go`, you need to have Go installed and set up on your machine. Once you have Go installed, you can install the library by running the following command:
@@ -23,13 +26,13 @@ To use `pintrest-scrape-go` as a command-line tool, you can follow the steps bel
 2. Build the executable:
 
    ```
-   go build cmd/commandline/main.go 
+   make
    ```
 
 3. Run the command-line tool with the desired options:
 
    ```
-   ./main -search "iphone wallpaper pinterest" -max 10 -concurrent 5 -dir "images"
+   ./bin/pinterest-scrape-go -search "iphone wallpaper pinterest" -max 10 -concurrent 5 -dir "images"
    ```
 
    The available options are:

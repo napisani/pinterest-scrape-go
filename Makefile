@@ -1,5 +1,4 @@
 build:
-	cd bbname-front && npm run build && rsync -rlv --delete build/ ../static
-	cd ..
-	docker-compose build
+	@echo "Building..."
+	@go build -o bin/pinterest-scrape-go cmd/commandline/main.go
 
