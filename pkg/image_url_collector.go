@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"encoding/json"
+	"fmt"
 	"path"
 	"reflect"
 
@@ -17,14 +18,19 @@ func GetImageUrls(pinterestUrls []string, maxImages int) []string {
 
 	c.OnHTML("script#__PWS_DATA__", func(e *colly.HTMLElement) {
 		scriptText := e.Text
-		urls := getImageUrls(scriptText, maxImages-len(imageUrls))
+		urls := getImageUrls(scriptText, maxImages)
 		for _, url := range urls {
+      if (len(imageUrls) == maxImages){
+        break
+      }
 			imageUrls = append(imageUrls, url)
 		}
 	})
 
 	for _, pinterestUrl := range pinterestUrls {
-		c.Visit(pinterestUrl)
+		if len(imageUrls) < maxImages {
+			c.Visit(pinterestUrl)
+		}
 	}
 	return imageUrls
 }
@@ -41,26 +47,37 @@ func getImageUrls(scriptText string, maxImages int) []string {
 	pins = pins["pins"].(JSONRecord)
 
 	buildList := func() []string {
-		url_list := []string{}
+		urlList := []string{}
 		for key, _ := range urls {
-			if slices.Index(SupportedExtensions, path.Ext(key)) >= 0 {
-				url_list = append(url_list, key)
+			urlList = append(urlList, key)
+			if len(urlList) >= maxImages {
+				break
 			}
 		}
-		return url_list[:maxImages]
+		end := maxImages
+		if len(urlList) < end {
+			end = len(urlList)
+		}
+		return urlList[:end]
 	}
 
 	for _, pin := range pins {
 		orig := pin.(JSONRecord)["images"].(JSONRecord)["orig"]
 		if reflect.TypeOf(orig) == reflect.TypeOf([]interface{}{}) {
 			for _, img := range orig.([]interface{}) {
-				urls[img.(JSONRecord)["url"].(string)] = true
+				url := img.(JSONRecord)["url"].(string)
+				if slices.Index(SupportedExtensions, path.Ext(url)) >= 0 {
+					urls[url] = true
+				}
 				if len(urls) >= maxImages {
 					return buildList()
 				}
 			}
 		} else {
-			urls[orig.(JSONRecord)["url"].(string)] = true
+			url := orig.(JSONRecord)["url"].(string)
+			if slices.Index(SupportedExtensions, path.Ext(url)) >= 0 {
+				urls[url] = true
+			}
 			if len(urls) >= maxImages {
 				return buildList()
 			}
