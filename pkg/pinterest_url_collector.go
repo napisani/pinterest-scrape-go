@@ -17,7 +17,7 @@ func GetPinterestUrls(searchTerm string) []string {
 			pinterestUrls = append(pinterestUrls, href)
 		}
 	})
-	c.Visit("http://www.google.co.in/search?hl=en&num=100&q=" + url.QueryEscape(searchTerm))
+  c.Visit("http://www.google.co.in/search?hl=en&num=100&q=" + url.QueryEscape(searchTerm+ " site:pinterest.com"))
 
 	return pinterestUrls
 }

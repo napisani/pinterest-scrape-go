@@ -2,8 +2,11 @@ package pkg
 
 import (
 	"encoding/json"
+	"path"
 	"reflect"
+
 	"github.com/gocolly/colly"
+	"golang.org/x/exp/slices"
 )
 
 type JSONRecord = map[string]interface{}
@@ -40,9 +43,11 @@ func getImageUrls(scriptText string, maxImages int) []string {
 	buildList := func() []string {
 		url_list := []string{}
 		for key, _ := range urls {
-			url_list = append(url_list, key)
+			if slices.Index(SupportedExtensions, path.Ext(key)) >= 0 {
+				url_list = append(url_list, key)
+			}
 		}
-		return url_list
+		return url_list[:maxImages]
 	}
 
 	for _, pin := range pins {
